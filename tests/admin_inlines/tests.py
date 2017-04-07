@@ -13,7 +13,7 @@ from .models import (
     Inner3, Inner4Stacked, Inner4Tabular, Novel, OutfitItem, Parent,
     ParentModelWithCustomPk, Person, Poll, Profile, ProfileCollection,
     Question, Sighting, SomeChildModel, SomeParentModel, Teacher,
-)
+    ChildModel27967)
 
 INLINE_CHANGELINK_HTML = 'class="inlinechangelink">Change</a>'
 
@@ -257,6 +257,34 @@ class TestInline(TestDataMixin, TestCase):
         response = self.client.post(reverse('admin:admin_inlines_extraterrestrial_add'), data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Sighting.objects.filter(et__name='Martian').count(), 1)
+
+    def test_create_inlines_on_inherited_UUID_model(self):
+        """
+        An object can be created with inlines when it inherits another class
+         which has uuid instead of pk.
+        """
+        data1 = {
+            'name': 'Anakin',
+            'childmodel27967_set-TOTAL_FORMS': 1,
+            'childmodel27967_set-INITIAL_FORMS': 0,
+            'childmodel27967_set-MAX_NUM_FORMS': 0,
+            'childmodel27967_set-0-name': 'Luke',
+            '_save': 'Save',
+        }
+        response = self.client.post(reverse('admin:admin_inlines_parentmodel27967_add'), data1)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(ChildModel27967.objects.filter(parent__name='Anakin').count(), 1)
+        data2 = {
+            'name': 'Anakin',
+            'childmodel27967_set-TOTAL_FORMS': 2,
+            'childmodel27967_set-INITIAL_FORMS': 1,
+            'childmodel27967_set-MAX_NUM_FORMS': 0,
+            'childmodel27967_set-1-name': 'Leia',
+            '_save': 'Save',
+        }
+        response = self.client.post(reverse('admin:admin_inlines_parentmodel27967_add'), data2)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(ChildModel27967.objects.filter(parent__name='Anakin').count(), 2)
 
     def test_custom_get_extra_form(self):
         bt_head = BinaryTree.objects.create(name="Tree Head")

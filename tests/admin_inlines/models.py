@@ -2,6 +2,7 @@
 Testing of admin inline formsets.
 """
 import random
+import uuid
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -244,6 +245,21 @@ class SomeChildModel(models.Model):
     name = models.CharField(max_length=1)
     position = models.PositiveIntegerField()
     parent = models.ForeignKey(SomeParentModel, models.CASCADE)
+
+
+# Models for #27967
+class AbstractUUIDModel27967(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=32)
+
+
+class ChildModel27967(AbstractUUIDModel27967):
+    parent = models.ForeignKey('ParentModel27967', models.PROTECT)
+
+
+class ParentModel27967(models.Model):
+    name = models.CharField(max_length=32)
+
 
 # Other models
 

@@ -9,7 +9,7 @@ from .models import (
     Profile, ProfileCollection, Question, ReadOnlyInline, ShoppingWeakness,
     Sighting, SomeChildModel, SomeParentModel, SottoCapo, Title,
     TitleCollection,
-)
+    ParentModel27967, ChildModel27967)
 
 site = admin.AdminSite(name="admin")
 
@@ -108,6 +108,11 @@ class Holder4Admin(admin.ModelAdmin):
 
 class InlineWeakness(admin.TabularInline):
     model = ShoppingWeakness
+    extra = 1
+
+
+class InlineChildModel27967(admin.TabularInline):
+    model = ChildModel27967
     extra = 1
 
 
@@ -214,6 +219,7 @@ site.register(Holder3, inlines=[InnerInline3])
 site.register(Poll, PollAdmin)
 site.register(Novel, NovelAdmin)
 site.register(Fashionista, inlines=[InlineWeakness])
+site.register(ParentModel27967, inlines=[InlineChildModel27967])
 site.register(Holder4, Holder4Admin)
 site.register(Author, AuthorAdmin)
 site.register(CapoFamiglia, inlines=[ConsigliereInline, SottoCapoInline, ReadOnlyInlineInline])
